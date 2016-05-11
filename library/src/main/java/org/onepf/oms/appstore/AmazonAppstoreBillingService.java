@@ -19,6 +19,7 @@ package org.onepf.oms.appstore;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.amazon.device.iap.PurchasingListener;
 import com.amazon.device.iap.PurchasingService;
@@ -47,12 +48,14 @@ import org.onepf.oms.appstore.googleUtils.Purchase;
 import org.onepf.oms.appstore.googleUtils.SkuDetails;
 import org.onepf.oms.util.Logger;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 
@@ -225,8 +228,18 @@ public class AmazonAppstoreBillingService implements AppstoreInAppBillingService
                             ", purchase UserId: ", userId);
                     break;
                 }
+
+                Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                calendar.clear();
+                calendar.set(2016, Calendar.JUNE, 1);
+                long effectTimeSinceEpoch = calendar.getTimeInMillis();
+                //Log.d("[unity]", "effectTimeSinceEpoch: " + effectTimeSinceEpoch);
                 for (final Receipt receipt : purchaseUpdatesResponse.getReceipts()) {
-                    inventory.addPurchase(getPurchase(receipt));
+                    Purchase purchase = getPurchase(receipt);
+                    //Log.d("[unity]", purchase.getSku() + " " + purchase.getPurchaseTime() + " "  + purchase.getToken());
+                    if (purchase.getPurchaseTime() > effectTimeSinceEpoch) {
+                        inventory.addPurchase(purchase);
+                    }
                 }
                 if (purchaseUpdatesResponse.hasMore()) {
                     PurchasingService.getPurchaseUpdates(false);
@@ -253,6 +266,7 @@ public class AmazonAppstoreBillingService implements AppstoreInAppBillingService
         final String storeSku = receipt.getSku();
         purchase.setSku(SkuManager.getInstance().getSku(OpenIabHelper.NAME_AMAZON, storeSku));
         purchase.setToken(receipt.getReceiptId());
+        purchase.setPurchaseTime(receipt.getPurchaseDate().getTime());
 
         switch (receipt.getProductType()) {
             case CONSUMABLE:
