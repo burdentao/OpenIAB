@@ -229,17 +229,23 @@ public class AmazonAppstoreBillingService implements AppstoreInAppBillingService
                     break;
                 }
 
+                /*
                 Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 calendar.clear();
                 calendar.set(2016, Calendar.JUNE, 1);
                 long effectTimeSinceEpoch = calendar.getTimeInMillis();
+                */
                 //Log.d("[unity]", "effectTimeSinceEpoch: " + effectTimeSinceEpoch);
                 for (final Receipt receipt : purchaseUpdatesResponse.getReceipts()) {
                     Purchase purchase = getPurchase(receipt);
                     //Log.d("[unity]", purchase.getSku() + " " + purchase.getPurchaseTime() + " "  + purchase.getToken());
-                    if (purchase.getPurchaseTime() > effectTimeSinceEpoch) {
+                    /*
+                    if (receipt.getProductType() == ProductType.ENTITLED || purchase.getPurchaseTime() > effectTimeSinceEpoch) {
                         inventory.addPurchase(purchase);
                     }
+                    */
+
+                    inventory.addPurchase(purchase);
                 }
                 if (purchaseUpdatesResponse.hasMore()) {
                     PurchasingService.getPurchaseUpdates(false);
