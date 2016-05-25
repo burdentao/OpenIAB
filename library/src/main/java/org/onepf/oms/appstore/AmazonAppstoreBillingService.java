@@ -232,17 +232,21 @@ public class AmazonAppstoreBillingService implements AppstoreInAppBillingService
 
                 Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 calendar.clear();
-                calendar.set(2016, Calendar.JUNE, 1);
+                //set UTC time, purchase time is system time
+                calendar.set(2016, Calendar.MAY, 25, 4, 0);
                 long effectTimeSinceEpoch = calendar.getTimeInMillis();
                 //Log.d("[unity]", "effectTimeSinceEpoch: " + effectTimeSinceEpoch);
                 for (final Receipt receipt : purchaseUpdatesResponse.getReceipts()) {
                     Purchase purchase = getPurchase(receipt);
-                    //Log.d("[unity]", purchase.getSku() + " " + purchase.getPurchaseTime() + " "  + purchase.getToken());
+                    //Log.d("[unity]", "----tom---- " + purchase.getSku() + " " + purchase.getPurchaseTime() + " "  + purchase.getToken() + " effectTimeSinceEpoch: " + effectTimeSinceEpoch);
                     if (purchase.getPurchaseTime() < effectTimeSinceEpoch) {
                         PurchasingService.notifyFulfillment(purchase.getToken(), FulfillmentResult.FULFILLED);
+                        //Add non-consumable product
+                        if (receipt.getProductType() != ProductType.CONSUMABLE) {
+                            inventory.addPurchase(purchase);
+                        }
                     }
-                    else
-                    {
+                    else {
                         inventory.addPurchase(purchase);
                     }
                 }
