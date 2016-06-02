@@ -233,7 +233,7 @@ public class AmazonAppstoreBillingService implements AppstoreInAppBillingService
                 Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 calendar.clear();
                 //set UTC time, purchase time is system time
-                calendar.set(2016, Calendar.MAY, 25, 4, 0);
+                calendar.set(2016, Calendar.JULY, 1);
                 long effectTimeSinceEpoch = calendar.getTimeInMillis();
                 //Log.d("[unity]", "effectTimeSinceEpoch: " + effectTimeSinceEpoch);
                 for (final Receipt receipt : purchaseUpdatesResponse.getReceipts()) {
