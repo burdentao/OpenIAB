@@ -218,9 +218,12 @@ public class AmazonAppstoreBillingService implements AppstoreInAppBillingService
 
         switch (requestStatus) {
             case SUCCESSFUL:
+                /*
                 for (final String sku : inventory.getAllOwnedSkus()) {
                     inventory.erasePurchase(sku);
                 }
+                */
+                inventory.eraseAllPurchase();
                 final UserData userData = purchaseUpdatesResponse.getUserData();
                 final String userId = userData.getUserId();
                 if (!userId.equals(currentUserId)) {

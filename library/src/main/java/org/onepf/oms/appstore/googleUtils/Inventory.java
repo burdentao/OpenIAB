@@ -30,7 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Inventory {
     private final Map<String, SkuDetails> mSkuMap = new ConcurrentHashMap<String, SkuDetails>();
-    private final Map<String, Purchase> mPurchaseMap = new ConcurrentHashMap<String, Purchase>();
+    //private final Map<String, Purchase> mPurchaseMap = new ConcurrentHashMap<String, Purchase>();
+    private final ArrayList<Purchase> mPurchaseList = new ArrayList<Purchase>();
 
     public Inventory() {
     }
@@ -44,17 +45,19 @@ public class Inventory {
 
     /**
      * Returns purchase information for a given product, or null if there is no purchase.
-     */
+     *
     public Purchase getPurchase(String sku) {
         return mPurchaseMap.get(sku);
     }
+     */
 
     /**
      * Returns whether or not there exists a purchase of the given product.
-     */
+     *
     public boolean hasPurchase(String sku) {
         return mPurchaseMap.containsKey(sku);
     }
+     */
 
     /**
      * Return whether or not details about the given product are available.
@@ -70,9 +73,14 @@ public class Inventory {
      * and you have just consumed an item successfully, which means that erasing its
      * purchase data from the Inventory you already have is quicker than querying for
      * a new Inventory.
-     */
+     *
     public void erasePurchase(String sku) {
         if (mPurchaseMap.containsKey(sku)) mPurchaseMap.remove(sku);
+    }
+     */
+
+    public void eraseAllPurchase() {
+        mPurchaseList.clear();
     }
 
     /**
@@ -80,7 +88,11 @@ public class Inventory {
      */
     @NotNull
     public List<String> getAllOwnedSkus() {
-        return new ArrayList<String>(mPurchaseMap.keySet());
+        List<String> result = new ArrayList<String>();
+        for (Purchase p : mPurchaseList) {
+            if (!result.contains(p.getSku())) result.add(p.getSku());
+        }
+        return result;
     }
 
     /**
@@ -89,18 +101,19 @@ public class Inventory {
     @NotNull
     public List<String> getAllOwnedSkus(String itemType) {
         List<String> result = new ArrayList<String>();
-        for (Purchase p : mPurchaseMap.values()) {
-            if (p.getItemType().equals(itemType)) result.add(p.getSku());
+        for (Purchase p : mPurchaseList) {
+            if (p.getItemType().equals(itemType) && !result.contains(p.getSku())) result.add(p.getSku());
         }
         return result;
     }
+
 
     /**
      * Returns a list of all purchases.
      */
     @NotNull
     public List<Purchase> getAllPurchases() {
-        return new ArrayList<Purchase>(mPurchaseMap.values());
+        return Collections.unmodifiableList(mPurchaseList);
     }
 
     public void addSkuDetails(@NotNull SkuDetails d) {
@@ -108,14 +121,16 @@ public class Inventory {
     }
 
     public void addPurchase(@NotNull Purchase p) {
-        mPurchaseMap.put(p.getSku(), p);
+        mPurchaseList.add(p);
     }
 
     public Map<String, SkuDetails> getSkuMap() {
         return Collections.unmodifiableMap(mSkuMap);
     }
 
+    /*
     public Map<String, Purchase> getPurchaseMap() {
         return Collections.unmodifiableMap(mPurchaseMap);
     }
+    */
 }
