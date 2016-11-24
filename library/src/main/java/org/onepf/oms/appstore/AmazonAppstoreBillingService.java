@@ -264,6 +264,10 @@ public class AmazonAppstoreBillingService implements AppstoreInAppBillingService
         purchase.setToken(receipt.getReceiptId());
         purchase.setPurchaseTime(receipt.getPurchaseDate().getTime());
 
+        if (receipt.getCancelDate() != null) {
+            purchase.SetCancelTime(receipt.getCancelDate().getTime());
+        }
+
         switch (receipt.getProductType()) {
             case CONSUMABLE:
                 // TODO Make sure this behavior is intended

@@ -38,6 +38,7 @@ public class Purchase implements Cloneable {
     String mPackageName;
     String mSku;
     long mPurchaseTime;
+    long mCancelTime;
     int mPurchaseState;
     String mDeveloperPayload;
     String mToken;
@@ -74,6 +75,10 @@ public class Purchase implements Cloneable {
 
     public void setPurchaseTime(long purchaseTime) {
         mPurchaseTime = purchaseTime;
+    }
+
+    public void SetCancelTime(long cancelTime) {
+        mCancelTime = cancelTime;
     }
 
     public void setPurchaseState(int purchaseState) {
@@ -164,6 +169,7 @@ public class Purchase implements Cloneable {
                 + ",\"packageName\":" + mPackageName
                 + ",\"productId\":" + mSku
                 + ",\"purchaseTime\":" + mPurchaseTime
+                + ",\"cancelTime\":" + mCancelTime
                 + ",\"purchaseState\":" + mPurchaseState
                 + ",\"developerPayload\":" + mDeveloperPayload
                 + ",\"token\":" + mToken
