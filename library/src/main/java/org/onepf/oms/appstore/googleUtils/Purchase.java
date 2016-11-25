@@ -136,6 +136,10 @@ public class Purchase implements Cloneable {
         return mPurchaseTime;
     }
 
+    public long getCancelTime() {
+        return mCancelTime;
+    }
+
     public int getPurchaseState() {
         return mPurchaseState;
     }
